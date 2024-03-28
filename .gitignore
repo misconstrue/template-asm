@@ -1,0 +1,5 @@
+*.asm
+*.log
+*.bin
+*.hex
+*.ELF
