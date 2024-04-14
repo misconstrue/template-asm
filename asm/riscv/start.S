@@ -29,6 +29,12 @@ start:
 	li t0, 0x10
 	csrs menvcfg, t0
 
+//  Enable float
+	li t0, 0x6000
+	csrs mstatus, t0
+	csrs sstatus, t0
+	csrs vsstatus, t0
+
 //	Switch MODE
 /*	MODE	mpv		mpp */
 //	U		0		0

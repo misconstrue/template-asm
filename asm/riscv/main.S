@@ -4,6 +4,7 @@
 
 .section .text
 main:
+	fmv.d.x f0, x0
     mv t0, t1
     mv t0, t1
     la t0, _data
