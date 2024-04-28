@@ -12,12 +12,20 @@ start:
 	sfence.vma
 	fence.i
 
+// enable delegate
+	li t0, 0xc00
+	csrs medeleg, t0
+
 // init vector table
+	li t1, SV_48_OFFSET
 	la t0, M_vector_table
+	add t0, t0, t1
 	csrw mtvec, t0
 	la t0, HS_vector_table
+	add t0, t0, t1
 	csrw stvec, t0
 	la t0, VS_vector_table
+	add t0, t0, t1
 	csrw vstvec, t0
 	fence.i
 

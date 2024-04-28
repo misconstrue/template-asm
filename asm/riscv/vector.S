@@ -11,8 +11,6 @@
     addi ra, ra, 4
 .endr  
     csrr t0, \EPC_REG&
-    li t1, SV_48_OFFSET
-    xor t0, t0, t1
     lw t0, 0(t0)
     li t1, 3
     and t0, t0, t1

@@ -8,6 +8,9 @@ objs=$(patsubst %.S, %.o, $(srcs))
 
 .PHONY: build clean
 
+run: build
+	bash /home/lijing/Desktop/work/software/spike_install/spike.sh $(target)
+
 build:$(target)
 	@echo "Target ELF Path:" `readlink -f $(target)`
 
