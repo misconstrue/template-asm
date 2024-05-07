@@ -50,11 +50,11 @@ start:
 //	M		0		3
 //	VU		1		0
 //	VS		1		1
-#define U_MODE (0<<11)
-#define HS_MODE (1<<11)
 #define M_MODE (3<11)
-#define VU_MODE (0<<11)|(1<<MSTATUS_MPV_SHIFT)
+#define HS_MODE (1<<11)
 #define VS_MODE (1<<11)|(1<<MSTATUS_MPV_SHIFT)
+#define VU_MODE (0<<11)|(1<<MSTATUS_MPV_SHIFT)
+#define U_MODE (0<<11)
 
 switch_mode:
 	li t0, VS_MODE
