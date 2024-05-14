@@ -17,6 +17,7 @@ build:$(target)
 $(target):$(objs)
 	$(gcc-prefix)-gcc $(LFLAGS) -Tlink.lds -e start $^ -o $@
 	$(gcc-prefix)-objdump -D $@ > $(target).asm
+
 %.o:%.S
 	$(gcc-prefix)-gcc $(CFLAGS) -c $^ -o $@
 
