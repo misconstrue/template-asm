@@ -1,21 +1,43 @@
 target=demo.ELF
+CC=aarch64-linux-gnu
 
-CFLAGS=-nostdlib
-LDFLAGS=-Wl,--entry="start",--build-id=none,--verbose,-Tlink.lds
-CC=/home/lijing/Desktop/work/software/arm-gcc/gcc-linaro-14.0.0-2023.06-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
-EL_X?=A64_EL_RV
+CFLAGS=-nostdlib -march=armv8.5-a
+LDFLAGS=-Wl,-Tlink.lds
 
-S_srcs := $(wildcard ./*.S)
+ifeq (MMU,1)
+CFLAGS+=-DMMU
+endif
+
+ifeq (CACHE,1)
+CFLAGS+=-DCACHE
+endif
+
+ifeq (PMU,1)
+CFLAGS+=-DPMU
+endif
+
+
+asm_srcs := $(wildcard ./*.S)
 c_srcs := $(wildcard ./*.c)
+objs := $(patsubst %.S, %.o, $(asm_srcs))
+objs += $(patsubst %.c, %.o, $(c_srcs))
 
 build:$(target)
+	@echo "gen $(target) finished"
 
-$(target) : $(S_srcs) $(c_srcs)
-	$(CC)-gcc $(CFLAGS) $(LDFLAGS) -DEL_X=A64_EL0_T  $^ -o $@
-	$(CC)-objdump -D $@ > $(target).asm
-	$(CC)-objcopy -O binary $@  $(target).bin
-	hexdump -x $(target).bin > $(target).hex
+$(target) : $(objs)
+	$(CC)-gcc $(LDFLAGS) $^ -o $@
+	echo "gen asm bin hex"
+	@$(CC)-objdump -D $@ > $(target).asm
+	@$(CC)-objcopy -O binary $@  $(target).bin
+	@hexdump -x $(target).bin > $(target).hex
+
+%.o : %.S
+	$(CC)-gcc $(CFLAGS) -c $^ -o $@
+
+%.o : %.c
+	$(CC)-gcc $(CFLAGS) -c $^ -o $@
 
 .PHONY: clean
 clean:
-	-rm *.ELF  *.asm  *.bin  *.hex
+	-@rm -rf *.o *.ELF  *.asm  *.bin  *.hex

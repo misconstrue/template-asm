@@ -1,9 +1,9 @@
-ENTRY(start)
+ENTRY(__start)
 SECTIONS 
 {
 	. = 0x80000000;
 	.text : {
-	     *(.text)
+	     *start.S(*)
 	}
 
 	.data : {
@@ -13,4 +13,9 @@ SECTIONS
 	.bss : {
 	     *(.bss)
 	}
+
+	. += 0x800;
+	. = ALIGN(16);
+	__stack_start = .;
+
 }

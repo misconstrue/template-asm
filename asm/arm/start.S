@@ -1,44 +1,54 @@
-.global start, UART_BASE_ADDR
+.global __start
+__start:
 
 
-.data 1
-.long 0x11111111
+# init sp
+ldr x0, =__stack_start
+msr sp_el0, x0
+msr sp_el1, x0
+msr sp_el2, x0
+msr spsel, #1
+mov sp, x0
 
+# init vector table
+ldr x0, =aarch64_el1_entry
+msr vbar_el1, x0
+ldr x0, =aarch64_el2_entry
+msr vbar_el1, x0
+ldr x0, =aarch64_el3_entry
+msr vbar_el3, x0
 
-#define A64_EL0_RV  0x1
-#define A64_EL0_T	0x2
-
-
-.text
-start:
-	mov x0, #0
-
-#if EL_X==A64_EL0_RV
-	orr x0, x0, 2
-#elif EL_X==A64_EL0_T
-	orr x0, x0, 1
+#ifdef MMU
+bl enable_mmu
 #endif
-	mov x1, x0
-	adr x1, UART_BASE_ADDR
-	ldr x0, =0x13000000
-	str x0, [x1]
-	mov x0, x1
-#	bl main
-	mov w0, 0x18
-	ldr x1, =0x13000000
-	strb w0, [x1]
+
+#ifdef CACHE
+bl enable_cache
+#endif
+
+#ifdef PMU
+/*
+x0 pmu_event num
+x1 pmu_cntr num
+*/
+bl enable_pmu
+#endif
+
+_switch_mode:
+#include "header.h"
+ldr x0, =EL0_T
+mrs x0, spsr_el3
+bfi x0, x0, 0, 5
+msr spsr_el3, x0
+adr x0, _test_code
+msr elr_el3, x0
+_test_code:
 	b .
 
-.data
-UART_BASE_ADDR:
-.int 0xeeeeeeee
-.int 0xeeeeeeee
-.fill 32,4,0xcccccccc
-
-.bss
-.int 0x00000000
-.int 0x00000000
+_end:
+	bl exit
+	b _end
 
 
-.data
-.long 0x22222222
+
+
