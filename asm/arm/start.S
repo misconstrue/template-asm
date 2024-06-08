@@ -36,15 +36,27 @@ bl enable_pmu
 
 _switch_mode:
 #include "header.h"
-ldr x0, =EL0_T
-mrs x0, spsr_el3
-bfi x0, x0, 0, 5
-msr spsr_el3, x0
-adr x0, _test_code
-msr elr_el3, x0
-_test_code:
-	b .
+	ldr x0, =EL0_T
+	mrs x0, spsr_el3
+	bfi x0, x0, 0, 5
+	msr spsr_el3, x0
+	adr x0, _test_code
+	msr elr_el3, x0
+	eret
 
+_test_code:
+	mov x0, x1
+	mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+mov x0, x1
+	ldr x1, =0x13000000
+	strb w0, [x1]
 _end:
 	bl exit
 	b _end
