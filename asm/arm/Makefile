@@ -1,8 +1,8 @@
 target=demo.ELF
-CC=aarch64-linux-gnu
+CC=aarch64-linux
 
-CFLAGS=-nostdlib -march=armv8.5-a
-LDFLAGS=-Wl,-Tlink.lds
+CFLAGS=-march=armv8.5-a
+LDFLAGS=-Wl,-Tlink.lds -Wl,-nostdlib
 
 ifeq (MMU,1)
 CFLAGS+=-DMMU
@@ -23,11 +23,9 @@ objs := $(patsubst %.S, %.o, $(asm_srcs))
 objs += $(patsubst %.c, %.o, $(c_srcs))
 
 build:$(target)
-	@echo "gen $(target) finished"
 
 $(target) : $(objs)
 	$(CC)-gcc $(LDFLAGS) $^ -o $@
-	echo "gen asm bin hex"
 	@$(CC)-objdump -D $@ > $(target).asm
 	@$(CC)-objcopy -O binary $@  $(target).bin
 	@hexdump -x $(target).bin > $(target).hex

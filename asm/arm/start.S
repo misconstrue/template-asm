@@ -45,17 +45,17 @@ _switch_mode:
 	eret
 
 _test_code:
-	mov x0, x1
-	mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-mov x0, x1
-	ldr x1, =0x13000000
+	mov x0, #1
+	add x0, x0, x0
+#	ldr x1, =0x13000000
+	ldr x1, =0x09000000
+	mov x0, 'a'
+	strb w0, [x1]
+	mov x0, 'b'
+	strb w0, [x1]
+	mov x0, #0
+	strb w0, [x1]
+	mov x0, '\n'
 	strb w0, [x1]
 _end:
 	bl exit
